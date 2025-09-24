@@ -4,10 +4,7 @@
 
     "features": {
         "ghcr.io/devcontainers/features/rust:1": {},
-        "ghcr.io/warrenbuckley/codespace-features/sqlite:latest": {},
-        "ghcr.io/devcontainers-contrib/features/apt-get:1": {
-            "packages": "nasm"
-        }
+        "ghcr.io/warrenbuckley/codespace-features/sqlite:latest": {}
     },
 
     "postCreateCommand": "sudo apt-get update && sudo apt-get install -y nasm curl && sqlite3 hogwarts.db < setup.sql",
