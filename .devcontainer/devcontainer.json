@@ -1,12 +1,16 @@
 {
-    "name": "Hogwarts DB - Rust & SQLite Environment",
+    "name": "Hogwarts DB - Rust, SQLite & NASM Environment",
     "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
 
     "features": {
-        "ghcr.io/devcontainers/features/rust:1": {}
+        "ghcr.io/devcontainers/features/rust:1": {},
+        "ghcr.io/devcontainers/features/sqlite:1": {},
+        "ghcr.io/devcontainers-contrib/features/apt-get:1": {
+            "packages": "nasm"
+        }
     },
 
-    "postCreateCommand": "sudo apt-get update && sudo apt-get install -y sqlite3 nasm && sqlite3 hogwarts.db < setup.sql",
+    "postCreateCommand": "sqlite3 hogwarts.db < setup.sql",
 
     "customizations": {
         "vscode": {
