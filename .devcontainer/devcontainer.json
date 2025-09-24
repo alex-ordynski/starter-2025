@@ -1,0 +1,13 @@
+{
+    "name": "Hogwarts DB - Rust & SQLite Environment",
+    "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+    "postCreateCommand": "sudo apt-get update && sudo apt-get install -y sqlite3 nasm && curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs -s -- -y && sqlite3 hogwarts.db < setup.sql",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "rust-lang.rust-analyzer",
+                "serayuzgur.crates"
+            ]
+        }
+    }
+}
