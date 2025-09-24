@@ -4,7 +4,7 @@
 
     "features": {
         "ghcr.io/devcontainers/features/rust:1": {},
-        "ghcr.io/devcontainers/features/sqlite:1": {},
+        "ghcr.io/warrenbuckley/codespace-features/sqlite:latest": {},
         "ghcr.io/devcontainers-contrib/features/apt-get:1": {
             "packages": "nasm"
         }
