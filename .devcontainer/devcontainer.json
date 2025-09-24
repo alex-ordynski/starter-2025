@@ -10,7 +10,7 @@
         }
     },
 
-    "postCreateCommand": "sqlite3 hogwarts.db < setup.sql",
+    "postCreateCommand": "sudo apt-get update && sudo apt-get install -y nasm curl && sqlite3 hogwarts.db < setup.sql",
 
     "customizations": {
         "vscode": {
