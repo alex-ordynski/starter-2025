@@ -27,4 +27,14 @@ INSERT INTO wizards (first_name, last_name, house_id) VALUES
     ('Hermione', 'Granger', 1),
     ('Ron', 'Weasley', 1),
     ('Draco', 'Malfoy', 2),
-    ('Luna', 'Lovegood', 3);
+    ('Luna', 'Lovegood', 3),
+    ('Neville', 'Longbottom', 1),
+    ('Ginny', 'Weasley', 1),
+    ('Cedric', 'Diggory', 4),
+    ('Cho', 'Chang', 3),
+    ('Pansy', 'Parkinson', 2),
+    ('Blaise', 'Zabini', 2),
+    ('Seamus', 'Finnigan', 1),
+    ('Dean', 'Thomas', 1),
+    ('Padma', 'Patil', 3),
+    ('Parvati', 'Patil', 1);
