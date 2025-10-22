@@ -1,124 +1,115 @@
--- Повне очищення у правильному порядку (від дочірніх до батьківських таблиць)
+-- Повне очищення перед початком випробування
+
+-- 1. Очищення таблиць з практичної роботи
+DROP TABLE IF EXISTS my_solution;
+DROP TABLE IF EXISTS challenge_01_room;
+DROP TABLE IF EXISTS challenge_02_plants;
+DROP TABLE IF EXISTS challenge_03_flying_keys;
+DROP TABLE IF EXISTS challenge_04_chess;
+DROP TABLE IF EXISTS challenge_05_potions;
+
+-- 2. Очищення таблиць з попередніх лабораторних робіт (Лаб 1-4)
+-- (Важливо дотримуватись порядку через FOREIGN KEYs:
+-- duels -> wizards, duelling_club_members -> wizards, wizards -> houses)
 DROP TABLE IF EXISTS duels;
 DROP TABLE IF EXISTS duelling_club_members;
 DROP TABLE IF EXISTS spells;
 DROP TABLE IF EXISTS wizards;
 DROP TABLE IF EXISTS houses;
 
--- Створення таблиці для факультетів (з Лаб 1)
-CREATE TABLE houses (
+--
+-- СТВОРЕННЯ СВІТУ ДЛЯ ПРАКТИЧНОЇ РОБОТИ
+--
+
+-- Кімната 1: Пухнастик та Арфа (з доданими предметами)
+CREATE TABLE challenge_01_room (
     id INTEGER PRIMARY KEY,
-    name TEXT NOT NULL,
-    founder TEXT,
-    animal TEXT
+    item_name TEXT NOT NULL,
+    status TEXT NOT NULL
 );
+INSERT INTO challenge_01_room (item_name, status) VALUES
+    ('Fluffy', 'Awake'),                 -- Ключовий предмет
+    ('Harp', 'Silent'),                -- Ключовий предмет
+    ('Three-headed dog bowl', 'Full'), -- Додатковий предмет
+    ('A large pile of bones', 'Messy'),-- Додатковий предмет
+    ('Stone trapdoor', 'Closed');        -- Додатковий предмет
 
--- Створення таблиці для чарівників (з Лаб 1)
-CREATE TABLE wizards (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    first_name TEXT NOT NULL,
-    last_name TEXT,
-    house_id INTEGER,
-    FOREIGN KEY (house_id) REFERENCES houses (id)
-);
-
--- Створення таблиці для заклять (з Лаб 2)
-CREATE TABLE spells (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL,
-    type TEXT,
-    description TEXT
-);
-
--- Створення таблиці членів клубу (з Лаб 3)
-CREATE TABLE duelling_club_members (
+-- Кімната 2: Гербарій (з пастками та безпечними рослинами)
+CREATE TABLE challenge_02_plants (
     id INTEGER PRIMARY KEY,
-    wizard_id INTEGER NOT NULL,
-    join_date DATE,
-    FOREIGN KEY (wizard_id) REFERENCES wizards(id) ON DELETE CASCADE
+    plant_name TEXT NOT NULL,
+    description TEXT,
+    weakness TEXT
 );
+INSERT INTO challenge_02_plants (plant_name, description, weakness) VALUES
+    ('Devil''s Snare', 'Loves damp and dark', 'Bright Light'), -- Ключовий предмет
+    ('Flitterbloom', 'Harmless, looks pretty', 'Nothing'),
+    ('Snargaluff', 'Aggressive, thorny', 'Fire'),
+    ('Venomous Tentacula', 'Very dangerous', 'Severing Charm'),
+    ('Fanged Geranium', 'Bites strangers', 'Lulling music'),
+    ('Mimbulus Mimbletonia', 'Squirts Stinksap', 'Water'),
+    ('Mandrake', 'Screams when uprooted', 'Earmuffs');
 
--- Створення таблиці дуелей (з Лаб 3)
-CREATE TABLE duels (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    winner_id INTEGER NOT NULL,
-    loser_id INTEGER NOT NULL,
-    duel_date DATE,
-    FOREIGN KEY (winner_id) REFERENCES wizards(id),
-    FOREIGN KEY (loser_id) REFERENCES wizards(id)
+-- Кімната 3: Летючі Ключі (100 ключів, один з яких правильний)
+CREATE TABLE challenge_03_flying_keys (
+    key_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    wing_status TEXT NOT NULL, -- 'Intact', 'Damaged'
+    key_type TEXT NOT NULL,    -- 'Modern', 'Antique', 'Rusty'
+    color TEXT,
+    location TEXT
 );
+-- Наповнюємо сотнею ключів
+INSERT INTO challenge_03_flying_keys (wing_status, key_type, color, location)
+WITH RECURSIVE cnt(x) AS (SELECT 1 UNION ALL SELECT x+1 FROM cnt LIMIT 100)
+SELECT 
+    -- Ключ #57 буде нашим правильним ключем
+    CASE WHEN x = 57 THEN 'Damaged' ELSE 'Intact' END,
+    CASE WHEN x = 57 THEN 'Antique' WHEN x % 10 = 0 THEN 'Rusty' ELSE 'Modern' END,
+    CASE WHEN x % 3 = 0 THEN 'Silver' WHEN x % 3 = 1 THEN 'Gold' ELSE 'Bronze' END,
+    'Sector ' || (x % 5 + 1)
+FROM cnt;
 
--- Наповнення базових таблиць
-INSERT INTO houses (id, name, founder, animal) VALUES
-    (1, 'Gryffindor', 'Godric Gryffindor', 'Lion'),
-    (2, 'Slytherin', 'Salazar Slytherin', 'Serpent'),
-    (3, 'Ravenclaw', 'Rowena Ravenclaw', 'Eagle'),
-    (4, 'Hufflepuff', 'Helga Hufflepuff', 'Badger');
+-- Кімната 4: Шахова партія (більше фігур)
+CREATE TABLE challenge_04_chess (
+    id INTEGER PRIMARY KEY,
+    piece_name TEXT NOT NULL,
+    color TEXT NOT NULL CHECK (color IN ('White', 'Black')),
+    position TEXT,
+    is_dangerous BOOLEAN NOT NULL CHECK (is_dangerous IN (0, 1))
+);
+INSERT INTO challenge_04_chess (id, piece_name, color, position, is_dangerous) VALUES
+    (1, 'White Pawn', 'White', 'a3', 1),
+    (2, 'White Queen', 'White', 'd1', 1),         -- Ключова фігура
+    (3, 'White Knight', 'White', 'c3', 1),
+    (4, 'Black King (Harry)', 'Black', 'e8', 0),
+    (5, 'Black Knight (Ron)', 'Black', 'g5', 0),  -- Ключова фігура
+    (6, 'White Bishop', 'White', 'f4', 1),
+    (7, 'Black Rook (Hermione)', 'Black', 'h8', 0),
+    (8, 'White Rook', 'White', 'a1', 1),
+    (9, 'White Pawn', 'White', 'g2', 0),
+    (10, 'Black Pawn', 'Black', 'a7', 0),
+    (11, 'Black Pawn', 'Black', 'b7', 0),
+    (12, 'Black Bishop', 'Black', 'c8', 0),
+    (13, 'White Pawn', 'White', 'd4', 1),
+    (14, 'Black Pawn', 'Black', 'e7', 0),
+    (15, 'White Bishop', 'White', 'c1', 1);
 
--- РОЗШИРЕНИЙ список чарівників
-INSERT INTO wizards (id, first_name, last_name, house_id) VALUES
-    (1, 'Harry', 'Potter', 1),
-    (2, 'Hermione', 'Granger', 1),
-    (3, 'Ron', 'Weasley', 1),
-    (4, 'Draco', 'Malfoy', 2),
-    (5, 'Luna', 'Lovegood', 3),
-    (6, 'Neville', 'Longbottom', 1),
-    (7, 'Ginny', 'Weasley', 1),
-    (8, 'Cedric', 'Diggory', 4),
-    (9, 'Cho', 'Chang', 3),
-    (10, 'Pansy', 'Parkinson', 2),
-    (11, 'Blaise', 'Zabini', 2),
-    (12, 'Seamus', 'Finnigan', 1),
-    (13, 'Dean', 'Thomas', 1),
-    (14, 'Padma', 'Patil', 3),
-    (15, 'Parvati', 'Patil', 1),
-    -- Нові чарівники
-    (16, 'Hannah', 'Abbott', 4),
-    (17, 'Susan', 'Bones', 4),
-    (18, 'Terry', 'Boot', 3),
-    (19, 'Justin', 'Finch-Fletchley', 4),
-    (20, 'Gregory', 'Goyle', 2);
-
--- РОЗШИРЕНИЙ список заклять
-INSERT INTO spells (name, type, description) VALUES
-    ('Wingardium Leviosa', 'Charm', 'Causes an object to levitate.'),
-    ('Alohomora', 'Charm', 'Unlocks doors and windows.'),
-    ('Expelliarmus', 'Jinx', 'Disarms another wizard.'),
-    ('Crucio', 'Curse', 'Inflicts unbearable pain.'),
-    ('Vera Verto', 'Transfiguration', 'Turns an animal into a water goblet.'),
-    -- Нові закляття
-    ('Lumos', 'Charm', 'Creates a beam of light at the tip of the wand.'),
-    ('Petrificus Totalus', 'Jinx', 'Full Body-Bind Curse.'),
-    ('Rictusempra', 'Jinx', 'The Tickling Charm.'),
-    ('Incendio', 'Charm', 'Produces fire.'),
-    ('Bat-Bogey Hex', 'Hex', 'Grotesquely enlarges the target''s bogeys.');
-
-
--- РОЗШИРЕНИЙ список членів Дуельного Клубу
-INSERT INTO duelling_club_members (wizard_id, join_date) VALUES
-    (1, '2025-10-08'), -- Harry
-    (2, '2025-10-08'), -- Hermione
-    (3, '2025-10-09'), -- Ron
-    (4, '2025-10-08'), -- Draco
-    (6, '2025-10-09'), -- Neville
-    (7, '2025-10-10'), -- Ginny
-    -- Нові члени клубу
-    (5, '2025-10-11'), -- Luna
-    (8, '2025-10-11'), -- Cedric
-    (16, '2025-10-12'),-- Hannah
-    (18, '2025-10-12'); -- Terry
-
--- РОЗШИРЕНИЙ журнал дуелей
--- Важливі дуелі 1-5 для індивідуального завдання ЗАЛИШАЮТЬСЯ НЕЗМІННИМИ
-INSERT INTO duels (id, winner_id, loser_id, duel_date) VALUES
-    (1, 1, 4, '2025-10-10'), -- Harry (1) vs Draco (4)
-    (2, 2, 3, '2025-10-10'), -- Hermione (2) vs Ron (3)
-    (3, 7, 9, '2025-10-11'), -- Ginny (7) vs Cho (9)
-    (4, 4, 3, '2025-10-12'), -- Draco (4) vs Ron (3)
-    (5, 6, 12, '2025-10-12'), -- Neville (6) vs Seamus (12)
-    -- Нові дуелі для більшої кількості даних
-    (6, 8, 5, '2025-10-13'), -- Cedric (8) vs Luna (5)
-    (7, 1, 20, '2025-10-13'), -- Harry (1) vs Goyle (20)
-    (8, 16, 17, '2025-10-14'), -- Hannah (16) vs Susan (17)
-    (9, 2, 18, '2025-10-14'), -- Hermione (2) vs Terry (18)
-    (10, 4, 6, '2025-10-15'); -- Draco (4) vs Neville (6)
+-- Кімната 5: Загадка Снейпа (з додатковими пляшками, що не ламають логіку)
+CREATE TABLE challenge_05_potions (
+    id INTEGER PRIMARY KEY,
+    position INTEGER NOT NULL,
+    color TEXT NOT NULL,
+    contents TEXT NOT NULL, -- 'Poison', 'Nettle Wine', 'Safety', 'Forward'
+    volume_ml INTEGER,
+    is_used BOOLEAN NOT NULL DEFAULT 0
+);
+INSERT INTO challenge_05_potions (position, color, contents, volume_ml, is_used) VALUES
+    (11, 'Black', 'Poison', 300, 0),
+    (12, 'Purple', 'Nettle Wine', 500, 0),
+    (13, 'Grey', 'Poison', 300, 0),
+    (14, 'Blue', 'Safety', 250, 0),       -- Ключ 2: Єдине синє
+    (15, 'Yellow', 'Nettle Wine', 500, 0),
+    (16, 'Red', 'Poison', 300, 0),
+    (17, 'Green', 'Forward', 150, 0),      -- Ключ 1: Найменший об'єм
+    (18, 'Brown', 'Poison', 400, 0),
+    (19, 'Purple', 'Nettle Wine', 500, 0); -- Ще одне вино, не впливає
