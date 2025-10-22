@@ -1,35 +1,24 @@
-; =============================================================================
-; A simple "Hello, agent!" program for 64-bit Linux
-; Author: Architect
-; Mission: Protocol "Awakening"
-; =============================================================================
+; Програма, що виводить "Hello, world!" на екран,
+; використовуючи 32-бітні системні виклики Linux.
 
 section .data
-    ; -- Our message to be printed
-    msg db 'Hello, agent! Welcome to the system.', 0xa  ; 0xa is the newline character
-    ; -- Calculate the length of our message
-    len equ $ - msg
+    msg db 'Hello, world!', 0xa  ; Рядок для виводу. 0xa - це символ нового рядка (newline).
+    len equ $ - msg             ; Директива EQU для обчислення довжини рядка.
 
 section .text
-    global _start       ; This is the entry point of our program
+    global _start               ; Оголошуємо _start глобальною точкою входу.
 
 _start:
-    ; --- Syscall to write our message to the console (stdout) ---
-    ; rax: syscall number (1 for 'write')
-    ; rdi: file descriptor (1 for stdout)
-    ; rsi: pointer to the message
-    ; rdx: length of the message
+    ; --- Системний виклик sys_write (номер 4) ---
+    ; ssize_t write(int fd, const void *buf, size_t count);
+    mov eax, 4                  ; Номер системного виклику sys_write.
+    mov ebx, 1                  ; Файловий дескриптор 1 (стандартний вивід, stdout).
+    mov ecx, msg                ; Вказівник на початок нашого повідомлення.
+    mov edx, len                ; Довжина повідомлення.
+    int 0x80                    ; Виклик ядра операційної системи.
 
-    mov rax, 1          ; syscall for write
-    mov rdi, 1          ; stdout
-    mov rsi, msg        ; our message
-    mov rdx, len        ; its length
-    syscall             ; Execute the system call
-
-    ; --- Syscall to exit the program gracefully ---
-    ; rax: syscall number (60 for 'exit')
-    ; rdi: exit code (0 for success)
-
-    mov rax, 60         ; syscall for exit
-    mov rdi, 0          ; exit code 0 (success)
-    syscall             ; Execute the system call
+    ; --- Системний виклик sys_exit (номер 1) ---
+    ; void _exit(int status);
+    mov eax, 1                  ; Номер системного виклику sys_exit.
+    mov ebx, 0                  ; Код завершення 0 (успіх).
+    int 0x80                    ; Виклик ядра.

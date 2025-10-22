@@ -1,37 +1,26 @@
-# =============================================================================
-# Makefile for the "Awakening" protocol
-# =============================================================================
-
-# -- Compiler and Linker --
+# Змінні для інструментів та прапорців
 ASM = nasm
-LD = ld
+ASFLAGS = -f elf32 -g -F dwarf
 
-# -- Flags --
-# -f elf64: specifies the output format as 64-bit ELF, standard for Linux
-AFLAGS = -f elf64
+# Використовуємо 'ld' для компонування програм без бібліотеки C
+LD = ld 
+LDFLAGS = -m elf_i386
 
-# -- Target executable name --
-TARGET = hello
+# Знайти всі файли з розширенням.asm у поточній директорії
+SOURCES = $(wildcard *.asm)
+# Створити список імен виконуваних файлів, замінивши.asm на порожній рядок
+EXECUTABLES = $(SOURCES:.asm=)
 
-# -- Default rule: executed when you just type 'make' --
-# This rule says that to build 'all', we first need to build our TARGET.
-all: $(TARGET)
+# Ціль за замовчуванням: зібрати всі виконувані файли
+all: $(EXECUTABLES)
 
-# -- Linking rule --
-# This rule creates the final executable (TARGET) from the object file (.o).
-$(TARGET): $(TARGET).o
-	$(LD) -o $(TARGET) $(TARGET).o
+# Шаблонне правило: як створити виконуваний файл з.asm файлу
+# $< - це ім'я першої залежності (вихідний.asm файл)
+# $@ - це ім'я цілі (виконуваний файл)
+%: %.asm
+	$(ASM) $(ASFLAGS) -o $@.o $<
+	$(LD) $(LDFLAGS) -o $@ $@.o
 
-# -- Assembling rule --
-# This rule creates the object file (.o) from the assembly source file (.asm).
-$(TARGET).o: $(TARGET).asm
-	$(ASM) $(AFLAGS) -o $(TARGET).o $(TARGET).asm
-
-# -- Clean rule: executed when you type 'make clean' --
-# This rule removes all generated files for a clean workspace.
+# Ціль для очищення: видаляє всі згенеровані файли
 clean:
-	rm -f $(TARGET) $(TARGET).o
-
-# -- Phony targets --
-# Tells 'make' that 'all' and 'clean' are not actual files.
-.PHONY: all clean
+	rm -f *.o $(EXECUTABLES)
