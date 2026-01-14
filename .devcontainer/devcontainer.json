@@ -4,7 +4,8 @@
 
     "features": {
         "ghcr.io/devcontainers/features/rust:1": {},
-        "ghcr.io/warrenbuckley/codespace-features/sqlite:latest": {}
+        "ghcr.io/warrenbuckley/codespace-features/sqlite:latest": {},
+        "ghcr.io/devcontainers/features/common-utils:1": {}
     },
 
     "postCreateCommand": "sudo apt-get update && sudo apt-get install -y nasm curl gdb gcc-multilib && sqlite3 hogwarts.db < setup.sql",
@@ -13,8 +14,15 @@
         "vscode": {
             "extensions": [
                 "rust-lang.rust-analyzer",
+                "tamasfe.even-better-toml",
                 "serayuzgur.crates"
-            ]
+            ],
+            "settings": {
+                "rust-analyzer.checkOnSave.command": "check",
+                "editor.formatOnSave": true
+            }
         }
-    }
+    },
+
+    "remoteUser": "vscode"
 }

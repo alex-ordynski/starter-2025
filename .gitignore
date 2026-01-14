@@ -2,7 +2,11 @@
 *.o
 
 # Executables (generated from .asm files)
-hello
+/hello
 
 # Database
 hogwarts.db
+
+# Rust build artifacts
+target/
+Cargo.lock
