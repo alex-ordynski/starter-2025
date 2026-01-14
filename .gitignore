@@ -6,3 +6,7 @@ hello
 
 # Database
 hogwarts.db
+
+# Rust build artifacts
+target/
+Cargo.lock
