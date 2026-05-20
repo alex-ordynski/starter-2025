@@ -1,113 +1,80 @@
 -- ==========================================
--- СХЕМА ДЛЯ ЛАБ 7: БРУДНІ АРХІВИ (Розширена)
+-- СХЕМА ДЛЯ ЛАБ 8: ТАЄМНИЦІ АСТРОНОМІЧНОЇ ВЕЖІ
 -- ==========================================
 
-DROP TABLE IF EXISTS dirty_potions;
-DROP TABLE IF EXISTS dirty_student_pets;
-DROP TABLE IF EXISTS dirty_grades;
-DROP TABLE IF EXISTS dirty_quidditch_gear;
-DROP TABLE IF EXISTS dirty_ministry_registry;
-DROP TABLE IF EXISTS dirty_mungo_patients;
+DROP TABLE IF EXISTS observations;
+DROP TABLE IF EXISTS wizards;
+DROP TABLE IF EXISTS houses;
 
--- Завдання 1.1: Списки в комірці (1НФ)
-CREATE TABLE dirty_potions (
-    potion_id INTEGER PRIMARY KEY,
-    potion_name TEXT,
-    ingredients_list TEXT
+-- Створення базових таблиць
+CREATE TABLE houses (
+    id INTEGER PRIMARY KEY,
+    name TEXT NOT NULL,
+    founder TEXT,
+    animal TEXT
 );
-INSERT INTO dirty_potions VALUES 
-(1, 'Багатозільна настійка', 'Рододендрон, Шкіра бумсланга, Товчений ріг дворога, П''явки'),
-(2, 'Амортенція', 'Яйця попелиці, Трояндові шпички, М''ята, Місячна роса'),
-(3, 'Фелікс Феліціс', 'Яйце попелиці, Цибулина морської цибулі, Настоянка чебрецю'),
-(4, 'Косторіст', 'Китайська жувальна капуста, Сік скарабея, Отрута пуфендуя'),
-(5, 'Зілля забуття', 'Вода з річки Лета, Гілочки валеріани, Ягоди омели');
 
--- Завдання 1.2: Повторювані колонки (1НФ)
-CREATE TABLE dirty_student_pets (
-    student_id INTEGER PRIMARY KEY,
-    student_name TEXT,
-    pet_1 TEXT,
-    pet_2 TEXT,
-    pet_3 TEXT
+CREATE TABLE wizards (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    first_name TEXT NOT NULL,
+    last_name TEXT,
+    house_id INTEGER,
+    FOREIGN KEY (house_id) REFERENCES houses (id)
 );
-INSERT INTO dirty_student_pets VALUES 
-(1, 'Гаррі Поттер', 'Сова Гедвіґа', NULL, NULL),
-(2, 'Рон Візлі', 'Щур Скеберс', 'Сова Левопіг', NULL),
-(3, 'Герміона Ґрейнджер', 'Кіт Криволапик', NULL, NULL),
-(4, 'Рубеус Геґрід', 'Пес Ікло', 'Дракон Норберт', 'Гіпогриф Бакбик'),
-(5, 'Невіл Лонґботом', 'Жаба Тревор', 'Кактус Мімбус', NULL);
 
--- Завдання 2.1: Часткова залежність (2НФ)
-CREATE TABLE dirty_grades (
-    student_id INTEGER,
-    course_id INTEGER,
-    grade TEXT,
-    course_name TEXT,
-    professor TEXT,
-    PRIMARY KEY (student_id, course_id)
+-- Нова таблиця для Астрономічної Вежі
+CREATE TABLE observations (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    wizard_id INTEGER NOT NULL,
+    body_type TEXT NOT NULL, -- Planet, Star, Comet, Nebula, Galaxy
+    constellation TEXT,
+    brightness REAL NOT NULL, 
+    duration_minutes INTEGER NOT NULL,
+    FOREIGN KEY (wizard_id) REFERENCES wizards (id)
 );
-INSERT INTO dirty_grades VALUES 
-(1, 101, 'Відмінно', 'Трансфігурація', 'Мінерва Макґонеґел'),
-(1, 102, 'Добре', 'Зіллєваріння', 'Северус Снейп'),
-(2, 101, 'Добре', 'Трансфігурація', 'Мінерва Макґонеґел'),
-(2, 102, 'Відмінно', 'Зіллєваріння', 'Северус Снейп'),
-(3, 101, 'Відмінно', 'Трансфігурація', 'Мінерва Макґонеґел'),
-(3, 103, 'Відмінно', 'Захист від темних мистецтв', 'Рімус Люпин'),
-(4, 102, 'Задовільно', 'Зіллєваріння', 'Северус Снейп'),
-(5, 104, 'Відмінно', 'Гербологія', 'Помона Спраут'),
-(1, 104, 'Відмінно', 'Гербологія', 'Помона Спраут');
 
--- Завдання 2.2: Часткова залежність (2НФ)
-CREATE TABLE dirty_quidditch_gear (
-    player_id INTEGER,
-    broom_model_id INTEGER,
-    purchase_date DATE,
-    manufacturer TEXT,
-    max_speed INTEGER,
-    PRIMARY KEY (player_id, broom_model_id)
-);
-INSERT INTO dirty_quidditch_gear VALUES 
-(1, 201, '1991-09-01', 'Nimbus Racing Broom Company', 150),
-(2, 202, '1992-08-15', 'Cleansweep Brooms', 110),
-(3, 201, '1992-09-05', 'Nimbus Racing Broom Company', 150),
-(4, 203, '1993-12-25', 'Firebolt Manufacturers', 250),
-(5, 202, '1991-08-10', 'Cleansweep Brooms', 110),
-(6, 204, '1990-07-20', 'Comet Trading Company', 120),
-(7, 203, '1994-01-10', 'Firebolt Manufacturers', 250);
+-- Наповнення даними
+INSERT INTO houses (id, name, founder, animal) VALUES
+    (1, 'Gryffindor', 'Godric Gryffindor', 'Lion'),
+    (2, 'Slytherin', 'Salazar Slytherin', 'Serpent'),
+    (3, 'Ravenclaw', 'Rowena Ravenclaw', 'Eagle'),
+    (4, 'Hufflepuff', 'Helga Hufflepuff', 'Badger');
 
--- Завдання 3.1: Транзитивна залежність (3НФ)
-CREATE TABLE dirty_ministry_registry (
-    wizard_id INTEGER PRIMARY KEY,
-    name TEXT,
-    address_code INTEGER,
-    city_name TEXT,
-    country_name TEXT
-);
-INSERT INTO dirty_ministry_registry VALUES 
-(1, 'Артур Візлі', 5001, 'Отері-Сент-Кечпол', 'Велика Британія'),
-(2, 'Моллі Візлі', 5001, 'Отері-Сент-Кечпол', 'Велика Британія'),
-(3, 'Луціус Малфой', 8002, 'Вілтшир', 'Велика Британія'),
-(4, 'Нарциса Малфой', 8002, 'Вілтшир', 'Велика Британія'),
-(5, 'Амос Діґорі', 5001, 'Отері-Сент-Кечпол', 'Велика Британія'),
-(6, 'Чарлі Візлі', 9005, 'Трансільванія', 'Румунія'),
-(7, 'Віктор Крум', 4004, 'Софія', 'Болгарія'),
-(8, 'Ігор Каркароф', 4004, 'Софія', 'Болгарія'),
-(9, 'Ксенофіліус Лавґуд', 5001, 'Отері-Сент-Кечпол', 'Велика Британія');
+INSERT INTO wizards (first_name, last_name, house_id) VALUES
+    ('Harry', 'Potter', 1), ('Hermione', 'Granger', 1), ('Ron', 'Weasley', 1),
+    ('Draco', 'Malfoy', 2), ('Pansy', 'Parkinson', 2),
+    ('Luna', 'Lovegood', 3), ('Cho', 'Chang', 3),
+    ('Cedric', 'Diggory', 4), ('Ernie', 'Macmillan', 4);
 
--- Завдання 3.2: Транзитивна залежність (3НФ)
-CREATE TABLE dirty_mungo_patients (
-    patient_id INTEGER PRIMARY KEY,
-    patient_name TEXT,
-    diagnosis TEXT,
-    ward_id INTEGER,
-    ward_name TEXT,
-    head_healer TEXT
-);
-INSERT INTO dirty_mungo_patients VALUES 
-(1, 'Артур Візлі', 'Укус змії', 4, 'Відділення укусів та отруєнь', 'Гіппократ Сметвік'),
-(2, 'Кеті Бел', 'Прокляття намиста', 5, 'Відділення магічних травм', 'Август Пай'),
-(3, 'Ґілдерой Локарт', 'Втрата пам''яті', 1, 'Відділення заклять', 'Міріам Строут'),
-(4, 'Аліса Лонґботом', 'Наслідки Круціатусу', 1, 'Відділення заклять', 'Міріам Строут'),
-(5, 'Френк Лонґботом', 'Наслідки Круціатусу', 1, 'Відділення заклять', 'Міріам Строут'),
-(6, 'Німфадора Тонкс', 'Бойове поранення', 5, 'Відділення магічних травм', 'Август Пай'),
-(7, 'Бродерік Боуд', 'Удушення рослиною', 4, 'Відділення укусів та отруєнь', 'Гіппократ Сметвік');
+-- Масивне наповнення журналу спостережень для аналітики
+INSERT INTO observations (wizard_id, body_type, constellation, brightness, duration_minutes) VALUES
+    -- Hermione (Gryffindor) - Very accurate and long observations
+    (2, 'Planet', 'Centaurus', 8.5, 45), (2, 'Star', 'Orion', 9.2, 60), 
+    (2, 'Nebula', 'Orion', 5.0, 110), (2, 'Planet', 'Ursa Major', 8.1, 55),
+    (2, 'Galaxy', 'Andromeda', 6.4, 90),
+    -- Harry (Gryffindor) - Shorter, random
+    (1, 'Comet', 'Ursa Major', 7.8, 15), (1, 'Star', 'Centaurus', 6.5, 20),
+    (1, 'Star', 'Draco', 7.0, 30), (1, 'Planet', 'Cassiopeia', 5.5, 25),
+    -- Ron (Gryffindor) - Shortest observations
+    (3, 'Planet', 'Ursa Major', 4.0, 10), (3, 'Star', 'Orion', 5.5, 15),
+    (3, 'Comet', 'Cassiopeia', 8.9, 12),
+    -- Draco (Slytherin) - Likes bright things and Draco constellation
+    (4, 'Planet', 'Draco', 9.9, 50), (4, 'Star', 'Draco', 8.0, 40), 
+    (4, 'Comet', 'Draco', 7.5, 35), (4, 'Star', 'Orion', 8.5, 45),
+    (4, 'Star', 'Centaurus', 9.0, 30),
+    -- Pansy (Slytherin)
+    (5, 'Planet', 'Lyra', 6.8, 20), (5, 'Star', 'Cassiopeia', 7.2, 25),
+    -- Luna (Ravenclaw) - Long observations of mysterious objects
+    (6, 'Nebula', 'Lyra', 4.5, 120), (6, 'Planet', 'Centaurus', 6.0, 45),
+    (6, 'Galaxy', 'Andromeda', 3.5, 150), (6, 'Nebula', 'Orion', 4.8, 90),
+    (6, 'Star', 'Ursa Major', 8.8, 40), (6, 'Comet', 'Lyra', 9.1, 25),
+    -- Cho (Ravenclaw)
+    (7, 'Star', 'Cassiopeia', 7.5, 35), (7, 'Planet', 'Ursa Major', 8.0, 40),
+    (7, 'Star', 'Centaurus', 7.8, 45), (7, 'Galaxy', 'Andromeda', 5.5, 60),
+    -- Cedric (Hufflepuff) - Solid, consistent
+    (8, 'Star', 'Orion', 8.2, 50), (8, 'Planet', 'Centaurus', 7.9, 45),
+    (8, 'Comet', 'Ursa Major', 8.5, 30), (8, 'Nebula', 'Lyra', 6.0, 70),
+    (8, 'Star', 'Cassiopeia', 7.7, 40),
+    -- Ernie (Hufflepuff)
+    (9, 'Planet', 'Draco', 6.5, 35), (9, 'Star', 'Orion', 7.0, 45),
+    (9, 'Star', 'Ursa Major', 6.8, 40), (9, 'Comet', 'Centaurus', 8.1, 20);
