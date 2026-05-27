@@ -11,17 +11,13 @@ command -v mongosh >/dev/null
 
 MONGO_HOST="${MONGO_HOST:-db}"
 MONGO_PORT="${MONGO_PORT:-27017}"
-MONGO_USER="${MONGO_INITDB_ROOT_USERNAME:-admin}"
-MONGO_PASSWORD="${MONGO_INITDB_ROOT_PASSWORD:-password}"
 
 mongosh --host "$MONGO_HOST" --port "$MONGO_PORT" \
-  --username "$MONGO_USER" --password "$MONGO_PASSWORD" \
-  --authenticationDatabase admin --quiet \
+  --quiet \
   --eval "const ok = db.adminCommand({ ping: 1 }).ok; if (ok !== 1) { throw new Error('MongoDB ping failed for ${MONGO_HOST}:${MONGO_PORT}'); }"
 
 mongosh --host "$MONGO_HOST" --port "$MONGO_PORT" \
-  --username "$MONGO_USER" --password "$MONGO_PASSWORD" \
-  --authenticationDatabase admin --quiet \
+  --quiet \
   --eval "const seeded = db.getSiblingDB('newt_suitcase').creatures.countDocuments({}); if (seeded < 154) { throw new Error('MongoDB seed check failed: expected at least 154 documents, got ' + seeded); }"
 
 sqlite3 hogwarts.db ".tables" >/dev/null
