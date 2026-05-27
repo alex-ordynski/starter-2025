@@ -1,6 +1,12 @@
 {
-    "name": "Hogwarts DB - Rust, SQLite, MongoDB & NASM Environment",
-    "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+    "name": "Hogwarts DB - Rust, SQLite, MongoDB & NASM Environment (Compose)",
+    "dockerComposeFile": "docker-compose.yml",
+    "service": "app",
+    "runServices": [
+        "app",
+        "db"
+    ],
+    "workspaceFolder": "/workspaces/starter-2025",
 
     "features": {
         "ghcr.io/devcontainers/features/rust:1": {},
@@ -9,6 +15,9 @@
     },
 
     "postCreateCommand": "bash .devcontainer/post-create.sh",
+    "forwardPorts": [
+        27017
+    ],
 
     "customizations": {
         "vscode": {

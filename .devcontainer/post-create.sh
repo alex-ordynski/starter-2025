@@ -11,10 +11,7 @@ echo "deb [ arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/mong
   | sudo tee /etc/apt/sources.list.d/mongodb-org-8.0.list >/dev/null
 
 sudo apt-get update
-sudo apt-get install -y mongodb-org
-
-sudo mkdir -p /data/db /var/log/mongodb
-sudo chown -R vscode:vscode /data/db /var/log/mongodb
+sudo apt-get install -y mongodb-mongosh
 
 printf '.mode table\n.headers on\n' > ~/.sqliterc
 sqlite3 hogwarts.db < setup.sql

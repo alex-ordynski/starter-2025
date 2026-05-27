@@ -64,19 +64,22 @@
 
 ### Запуск MongoDB у Codespace 🛠️
 
-MongoDB встановлюється автоматично під час створення Codespace через `.devcontainer/devcontainer.json`.
+MongoDB налаштовано через Docker Compose у `.devcontainer/docker-compose.yml`:
 
-У MongoDB є дві головні програми:
+- `app` — робочий контейнер студента.
+- `db` — окремий контейнер `mongo:8.0` з персистентним томом `mongodb-data`.
+- Облікові дані root-користувача MongoDB задаються в Compose (`admin` / `password`).
 
-- **`mongod`** — сервер бази даних.
-- **`mongosh`** — CLI-клієнт для запитів.
-
-Запуск у терміналі:
+Після старту Codespace сервер `mongod` у контейнері `db` уже працює. У терміналі `app` підключайтесь через `mongosh`:
 
 ```bash
-mongod --dbpath /data/db --fork --logpath /var/log/mongodb/mongod.log
-mongosh
+mongosh --host db --username admin --password password --authenticationDatabase admin
 ```
+
+Для MongoDB VS Code extension можна використовувати:
+
+- хост `db:27017` (із контейнера);
+- хост `localhost:27017` (через forwarded port 27017).
 
 ### Скрипт наповнення бази 💾
 
