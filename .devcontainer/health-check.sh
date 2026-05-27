@@ -14,11 +14,11 @@ MONGO_PORT="${MONGO_PORT:-27017}"
 
 mongosh --host "$MONGO_HOST" --port "$MONGO_PORT" \
   --quiet \
-  --eval "const ok = db.adminCommand({ ping: 1 }).ok; if (ok !== 1) { throw new Error('MongoDB ping failed for ${MONGO_HOST}:${MONGO_PORT}'); }"
+  --eval "const host = '${MONGO_HOST}:${MONGO_PORT}'; const ok = db.adminCommand({ ping: 1 }).ok; if (ok !== 1) { throw new Error('MongoDB ping failed for ' + host); }"
 
 mongosh --host "$MONGO_HOST" --port "$MONGO_PORT" \
   --quiet \
-  --eval "const seeded = db.getSiblingDB('newt_suitcase').creatures.countDocuments({}); if (seeded < 154) { throw new Error('MongoDB seed check failed: expected at least 154 documents, got ' + seeded); }"
+  --eval "const MIN_EXPECTED_CREATURES = 154; const seeded = db.getSiblingDB('newt_suitcase').creatures.countDocuments({}); if (seeded < MIN_EXPECTED_CREATURES) { throw new Error('MongoDB seed check failed: expected at least ' + MIN_EXPECTED_CREATURES + ' documents, got ' + seeded); }"
 
 sqlite3 hogwarts.db ".tables" >/dev/null
 
