@@ -47,3 +47,92 @@
 | `constellation` | TEXT | Сузір'я спостереження |
 | `brightness` | REAL | Яскравість (0–10) |
 | `duration_minutes` | INTEGER | Тривалість спостереження (хвилини) |
+| `observation_date` | TEXT | Дата спостереження |
+| `notes` | TEXT | Нотатки учня |
+
+---
+
+## Лабораторна робота № 11 🧳🐉
+
+**Тема:** Основи документо-орієнтованих баз даних NoSQL. Робота в CLI MongoDB. CRUD-операції та фільтрація даних (аналоги базового SQL).
+
+### Ідея 💡
+
+**Сценарій: "Фантастичні Звірі: Цифрова Валіза Ньюта Скамандера"**
+
+Ви — помічник магозоолога Ньюта Скамандера. Його валіза переповнена фантастичними звірами, і Міністерство вимагає електронний реєстр. Через те, що кожен звір має різні характеристики, для лабораторної використовується MongoDB.
+
+### Запуск MongoDB у Codespace 🛠️
+
+MongoDB встановлюється автоматично під час створення Codespace через `.devcontainer/devcontainer.json`.
+
+У MongoDB є дві головні програми:
+
+- **`mongod`** — сервер бази даних.
+- **`mongosh`** — CLI-клієнт для запитів.
+
+Запуск у терміналі:
+
+```bash
+mongod --dbpath /data/db --fork --logpath /var/log/mongodb/mongod.log
+mongosh
+```
+
+### Скрипт наповнення бази 💾
+
+У репозиторії вже додано файл `setup_beasts.js`.
+
+У `mongosh` виконайте:
+
+```javascript
+load("setup_beasts.js")
+```
+
+Скрипт:
+- очищає колекцію `creatures`;
+- генерує понад 150 записів;
+- додає кілька відомих істот (Teddy, Pickett, Norbert, Buckbeak).
+
+### Хід роботи (завдання) 🚀
+
+1. **Базовий пошук та сортування (`find`, `sort`, `limit`)**
+   - Знайдіть 3 істоти з `danger_level: 5`.
+   - Виведіть усіх `Niffler`, відсортувавши за `sightings` за спаданням.
+
+2. **Логічні оператори (аналоги `AND`, `OR`, `IN`)**
+   - `Carnivore` і `status: "Missing"`.
+   - Вид `Dragon` або `Thunderbird` через `$or`.
+   - Те саме через `$in`.
+
+3. **Робота з масивами**
+   - Знайдіть істот, де `habitats` містить `"Hogwarts"`.
+
+4. **Модифікація даних (`INSERT`, `UPDATE`, `DELETE`)**
+   - Додайте `Frank` (`_id: 1000`, `species: Thunderbird`, `danger_level: 4`).
+   - Оновіть Teddy (`_id: 996`) через `$set`, встановивши `sightings: 105`.
+   - Видаліть Norbert (`_id: 998`).
+
+5. **Індивідуальне завдання**
+   - Обчисліть варіант `V = N % 4` і виконайте відповідний запит.
+
+### Шпаргалка для викладача 🗝️
+
+```javascript
+// Крок 2 (IN)
+db.creatures.find({ species: { $in: ["Dragon", "Thunderbird"] } })
+
+// Крок 4
+db.creatures.insertOne({ _id: 1000, name: "Frank", species: "Thunderbird", danger_level: 4 });
+db.creatures.updateOne({ _id: 996 }, { $set: { sightings: 105 } });
+db.creatures.deleteOne({ _id: 998 });
+
+// Варіант 0
+db.creatures.find({ "attributes.magic_power_level": { $gt: 80 }, status: "In Suitcase" })
+// Варіант 1
+db.creatures.find({ $or: [ { "attributes.color": "Black" }, { danger_level: { $lt: 2 } } ] })
+// Варіант 2
+db.creatures.updateOne({ name: "Buckbeak" }, { $set: { status: "Under Observation" } })
+db.creatures.find({ name: "Buckbeak" })
+// Варіант 3
+db.creatures.find({ sightings: { $gte: 10, $lte: 20 } })
+```
