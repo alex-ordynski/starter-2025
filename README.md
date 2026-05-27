@@ -66,15 +66,18 @@
 
 MongoDB налаштовано через Docker Compose у `.devcontainer/docker-compose.yml`:
 
-- `app` — робочий контейнер студента.
+- `app` — робочий контейнер студента, який збирається з `.devcontainer/Dockerfile` (SQLite, NASM, build-tools, `mongosh`).
 - `db` — окремий контейнер `mongo:8.0` з персистентним томом `mongodb-data`.
 - Облікові дані root-користувача MongoDB задаються в Compose (`admin` / `password`).
+- Після створення середовища запускається `.devcontainer/health-check.sh`, який перевіряє доступність Rust, SQLite, NASM, `mongosh` і стабільність MongoDB-сервісу.
 
 Після старту Codespace сервер `mongod` у контейнері `db` уже працює. У терміналі `app` підключайтесь через `mongosh`:
 
 ```bash
-mongosh --host db --username admin --password password --authenticationDatabase admin
+mongosh --host db --username admin --authenticationDatabase admin
 ```
+
+Після запуску команда попросить пароль (типово `password`, якщо не перевизначено змінними середовища).
 
 Для MongoDB VS Code extension можна використовувати:
 

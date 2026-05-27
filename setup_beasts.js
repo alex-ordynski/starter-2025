@@ -73,7 +73,7 @@ creaturesToInsert.push(
         species: "Hippogriff",
         danger_level: 3,
         habitats: ["Hogwarts", "Forests"],
-        attributes: { color: "Grey", diet: "Carnivore", magic_power_level: 60 },
+        attributes: { color: "Gray", diet: "Carnivore", magic_power_level: 60 },
         status: "Released",
         sightings: 25
     }
