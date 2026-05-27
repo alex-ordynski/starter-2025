@@ -1,21 +1,36 @@
 {
-    "name": "Hogwarts DB - Rust, SQLite & NASM Environment",
-    "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+    "name": "Hogwarts DB - Rust, SQLite, MongoDB & NASM Environment (Compose)",
+    "dockerComposeFile": "docker-compose.yml",
+    "service": "app",
+    "runServices": [
+        "app",
+        "db"
+    ],
+    "workspaceFolder": "/workspaces/starter-2025",
 
     "features": {
-        "ghcr.io/devcontainers/features/rust:1": {},
-        "ghcr.io/warrenbuckley/codespace-features/sqlite:latest": {},
+        "ghcr.io/devcontainers/features/rust:1": {
+            "version": "latest",
+            "profile": "default"
+        },
         "ghcr.io/devcontainers/features/common-utils:1": {}
     },
 
-    "postCreateCommand": "sudo apt-get update && sudo apt-get install -y nasm curl gdb gcc-multilib && printf '.mode table\\n.headers on\\n' > ~/.sqliterc && sqlite3 hogwarts.db < setup.sql",
+    "postCreateCommand": "bash .devcontainer/post-create.sh && bash .devcontainer/health-check.sh",
+    "forwardPorts": [
+        27017
+    ],
 
     "customizations": {
         "vscode": {
             "extensions": [
                 "rust-lang.rust-analyzer",
                 "tamasfe.even-better-toml",
-                "serayuzgur.crates"
+                "serayuzgur.crates",
+                "mongodb.mongodb-vscode",
+                "13xforever.language-x86-64-assembly",
+                "mtxr.sqltools",
+                "mtxr.sqltools-driver-sqlite"
             ],
             "settings": {
                 "rust-analyzer.checkOnSave.command": "check",
