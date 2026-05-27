@@ -24,7 +24,7 @@ services:
       - mongodb-data:/data/db
       - ../setup_beasts.js:/docker-entrypoint-initdb.d/01-setup_beasts.js:ro
     healthcheck:
-      test: ["CMD-SHELL", "mongosh --quiet --eval \"db.adminCommand('ping').ok\" | grep 1"]
+      test: ["CMD-SHELL", "mongosh --quiet --eval \"const ok = db.adminCommand({ ping: 1 }).ok; if (ok !== 1) { throw new Error('MongoDB ping failed in container healthcheck'); }\""]
       interval: 10s
       timeout: 5s
       retries: 10
