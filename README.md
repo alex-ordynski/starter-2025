@@ -69,7 +69,8 @@ MongoDB налаштовано через Docker Compose у `.devcontainer/docke
 - `app` — робочий контейнер студента, який збирається з `.devcontainer/Dockerfile` (SQLite, NASM, build-tools, `mongosh`).
 - `db` — окремий контейнер `mongo:8.0` з персистентним томом `mongodb-data`.
 - Облікові дані root-користувача MongoDB задаються в Compose (`admin` / `password`).
-- Після створення середовища запускається `.devcontainer/health-check.sh`, який перевіряє доступність Rust, SQLite, NASM, `mongosh` і стабільність MongoDB-сервісу.
+- Під час першого старту контейнера `db` Mongo автоматично виконує `setup_beasts.js` через `/docker-entrypoint-initdb.d/` і заповнює колекцію `newt_suitcase.creatures`.
+- Після створення середовища запускається `.devcontainer/health-check.sh`, який перевіряє доступність Rust, SQLite, NASM, `mongosh`, стабільність MongoDB-сервісу і наявність seed-даних.
 
 Після старту Codespace сервер `mongod` у контейнері `db` уже працює. У терміналі `app` підключайтесь через `mongosh`:
 
@@ -88,7 +89,9 @@ mongosh --host db --username admin --authenticationDatabase admin
 
 У репозиторії вже додано файл `setup_beasts.js`.
 
-У `mongosh` виконайте:
+Дані завантажуються автоматично при першому старті `db` сервісу, тому студенту достатньо відкрити Codespace і виконати `mongosh`.
+
+Якщо треба вручну перезавантажити seed-дані, у `mongosh` виконайте:
 
 ```javascript
 load("setup_beasts.js")
