@@ -37,10 +37,46 @@ for (let i = 1; i <= 150; i++) {
 }
 
 creaturesToInsert.push(
-    { _id: 996, name: "Teddy", species: "Niffler", danger_level: 1, habitats: ["Britain", "Banks"], attributes: { color: "Black", diet: "Omnivore", magic_power_level: 15 }, status: "In Suitcase", sightings: 100 },
-    { _id: 997, name: "Pickett", species: "Bowtruckle", danger_level: 1, habitats: ["Forests"], attributes: { color: "Green", diet: "Insectivore", magic_power_level: 10 }, status: "In Suitcase", sightings: 42 },
-    { _id: 998, name: "Norbert", species: "Dragon", danger_level: 5, habitats: ["Hogwarts", "Romania"], attributes: { color: "Green", diet: "Carnivore", magic_power_level: 95 }, status: "Released", sightings: 5 },
-    { _id: 999, name: "Buckbeak", species: "Hippogriff", danger_level: 3, habitats: ["Hogwarts", "Forests"], attributes: { color: "Grey", diet: "Carnivore", magic_power_level: 60 }, status: "Released", sightings: 25 }
+    {
+        _id: 996,
+        name: "Teddy",
+        species: "Niffler",
+        danger_level: 1,
+        habitats: ["Britain", "Banks"],
+        attributes: { color: "Black", diet: "Omnivore", magic_power_level: 15 },
+        status: "In Suitcase",
+        sightings: 100
+    },
+    {
+        _id: 997,
+        name: "Pickett",
+        species: "Bowtruckle",
+        danger_level: 1,
+        habitats: ["Forests"],
+        attributes: { color: "Green", diet: "Insectivore", magic_power_level: 10 },
+        status: "In Suitcase",
+        sightings: 42
+    },
+    {
+        _id: 998,
+        name: "Norbert",
+        species: "Dragon",
+        danger_level: 5,
+        habitats: ["Hogwarts", "Romania"],
+        attributes: { color: "Green", diet: "Carnivore", magic_power_level: 95 },
+        status: "Released",
+        sightings: 5
+    },
+    {
+        _id: 999,
+        name: "Buckbeak",
+        species: "Hippogriff",
+        danger_level: 3,
+        habitats: ["Hogwarts", "Forests"],
+        attributes: { color: "Grey", diet: "Carnivore", magic_power_level: 60 },
+        status: "Released",
+        sightings: 25
+    }
 );
 
 db.creatures.insertMany(creaturesToInsert);
